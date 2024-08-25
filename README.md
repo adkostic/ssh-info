@@ -59,3 +59,13 @@ When finished working, this is the shutdown procedure:
 
 I also made a video!
 See `vscode_ssh_o2.mp4`
+
+## Best practice basic UNIX
+
+### File transfer
+
+For rsync:
+
+```bash
+rsync -avh --progress source/ destination/
+```
