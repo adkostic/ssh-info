@@ -20,6 +20,9 @@ ssh adk9@transfer.rc.hms.harvard.edu
 # There is a directory only accessible via `transfer`:
 cd /n/standby/joslin/kostic/
 # serves as a backup directory (long-term storage)
+
+# Running interactive jobs
+srun --pty -p interactive --mem 32G -c 16 -t 0-06:00 /bin/bash
 ```
 
 ### local VS Code Remote-SSH into O2
