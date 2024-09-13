@@ -70,6 +70,27 @@ How to check on the performance of a completed job:
 
 ```bash
 O2_jobs_report -j <JOBID>
+sacct -l -j <JOBID>
+```
+
+#### How to cancel a series of jobs based on shared string in name
+
+Let's say your string is `sn-mg`. First, test with:
+
+```bash
+squeue --me --states=RUNNING --Format=jobid,name --noheader |
+   grep sn-mg |
+   awk '{print $1}'  |
+   xargs echo scancel
+```
+
+Then, execute with:
+
+```bash
+squeue --me --states=RUNNING --Format=jobid,name --noheader |
+   grep sn-mg |
+   awk '{print $1}' |
+   xargs scancel
 ```
 
 ## Best practice basic UNIX
