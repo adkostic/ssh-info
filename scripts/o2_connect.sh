@@ -1,80 +1,89 @@
 #!/bin/bash
 
-# Path to store the SSH control master socket
-CONTROL_PATH="~/.ssh/controlmasters/%r@%h:%p"
+# Variables
+CONTROL_PATH="$HOME/.ssh/controlmasters/%r@%h:%p"
+SSH_CONFIG_DIR="$HOME/.ssh/config.d"
+SBATCH_SCRIPT_PATH="/home/adk9/gh_repos/ssh-info/scripts/start_vs_code_job.sh"  # Adjust the path if needed
+REMOTE_WORK_DIR="/home/adk9/gh_repos"  # Adjust to your desired remote directory
 
 # Function to execute an SSH command with the control master socket
 ssh_command() {
-    ssh -o ControlPath=$CONTROL_PATH "$@"
+    ssh -o ControlMaster=auto -o ControlPath="$CONTROL_PATH" -o ControlPersist=600 "$@"
 }
 
 # Function to start the SSH control master
 start_control_master() {
-    # Check if a control master connection already exists
-    if ssh -S $CONTROL_PATH -O check o2jump 2>/dev/null; then
-        echo "ControlMaster connection already exists."
+    if ssh -S "$CONTROL_PATH" -O check o2jump 2>/dev/null; then
+        echo "ControlMaster connection to o2jump already exists."
     else
-        echo "Starting a new ControlMaster connection."
-        # Start a new control master connection in the background
-        ssh -M -N -f -o ControlPath=$CONTROL_PATH o2jump
+        echo "Starting ControlMaster connection to o2jump."
+        ssh -M -N -f -o ControlPath="$CONTROL_PATH" o2jump
     fi
 }
 
-# Function to connect to the remote server and start VS Code
+# Function to connect and set up the environment
 connect() {
-    # Path to the SBATCH script for starting VS Code
-    sbatch_script_path="/home/adk9/gh_repos/ssh-info/scripts/start_vs_code_job.sh"
-
-    # Create the directory to store the control master socket
-    mkdir -p ~/.ssh/controlmasters
+    # Create necessary directories
+    mkdir -p "$HOME/.ssh/controlmasters"
+    mkdir -p "$SSH_CONFIG_DIR"
 
     # Start the SSH control master
     start_control_master
 
-    # Check if the SBATCH script exists on the remote server
-    if ! ssh_command o2jump "test -f $sbatch_script_path"; then
-        echo "Error: SBATCH script not found at $sbatch_script_path"
+    # Verify the SBATCH script exists
+    if ! ssh_command o2jump "test -f $SBATCH_SCRIPT_PATH"; then
+        echo "Error: SBATCH script not found at $SBATCH_SCRIPT_PATH"
         exit 1
     fi
 
-    # Submit the SBATCH script as a job and get the job ID
-    job_id=$(ssh_command o2jump "sbatch $sbatch_script_path" | awk '{print $4}')
+    # Submit the SBATCH script and capture the job ID
+    job_submission=$(ssh_command o2jump "sbatch $SBATCH_SCRIPT_PATH")
+    if [[ $? -ne 0 ]]; then
+        echo "Error submitting job: $job_submission"
+        exit 1
+    fi
 
+    job_id=$(echo "$job_submission" | awk '{print $4}')
     echo "Submitted job with ID: $job_id"
 
-    # Wait for the job to start running on a compute node
+    # Wait for the job to start and get the compute node name
+    echo "Waiting for the job to start..."
     while true; do
-        # Get the name of the compute node running the job
-        node_name=$(ssh_command o2jump "squeue -j $job_id -h -o '%N' | grep -vE '^(\s|N/A|\(None\))$'")
-        if [[ -n $node_name ]]; then
-            echo "Job running on node: $node_name"
+        job_info=$(ssh_command o2jump "squeue -j $job_id -h -o '%T %N'")
+        job_state=$(echo "$job_info" | awk '{print $1}')
+        node_name=$(echo "$job_info" | awk '{print $2}')
+        if [[ "$job_state" == "RUNNING" && "$node_name" != "(None)" && "$node_name" != "n/a" && -n "$node_name" ]]; then
+            echo "Job is running on node: $node_name"
             break
         fi
-        echo "Waiting for job to start..."
         sleep 5
     done
 
-    # Backup the SSH config file
-    cp ~/.ssh/config ~/.ssh/config.bak
+    # Update the SSH config for o2job
+    local ssh_config_file="$SSH_CONFIG_DIR/o2job.conf"
+    cat > "$ssh_config_file" << EOF
+Host o2job
+    HostName $node_name
+    User adk9
+    ProxyJump o2jump
+    ForwardAgent yes
+EOF
 
-    # Remove any existing SSH config entries for the 'o2job' host
-    sed -i.bak "/Host o2job/,+4d" ~/.ssh/config
+    echo "SSH config updated for o2job pointing to $node_name."
 
-    # Add a new SSH config entry for the 'o2job' host with the compute node name
-    ssh_config_line="Host o2job\n  HostName $node_name\n  User adk9\n  ProxyJump o2jump\n  ForwardAgent yes\n  ControlMaster auto\n  ControlPath $CONTROL_PATH\n  ControlPersist 10m"
-    echo -e "$ssh_config_line" >> ~/.ssh/config
-
-    echo "Updated SSH config with node name: $node_name"
-
-    # Check if the 'code' command is available
+    # Verify VS Code is installed
     if ! command -v code &> /dev/null; then
-        echo "VS Code command 'code' not found. Please install 'code' command."
+        echo "Error: VS Code command 'code' not found."
         exit 1
     fi
 
-    # Open VS Code with the SSH remote URI for the 'o2job' host
-    code --folder-uri "vscode-remote://ssh-remote+o2job/home/adk9/gh_repos"
+    # Open VS Code connected to the compute node
+    code --folder-uri "vscode-remote://ssh-remote+o2job$REMOTE_WORK_DIR"
+
+    # Optional: Clean up the SSH config after use
+    # Uncomment the following line if you want to remove the config after closing VS Code
+    # rm "$ssh_config_file"
 }
 
-# Always run the connect function
+# Execute the connect function
 connect
