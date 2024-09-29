@@ -1,0 +1,230 @@
+---
+title: "GCP"
+author: "adkostic"
+date: "`r Sys.Date()`"
+format: 
+  html:
+    code-fold: true
+---
+
+# Using Google Cloud Platform
+
+I am using my Google account `adk@kosticlab.org` as the user. Here are all the GCP projects in the Kostic Lab group:
+**MAG-make** (the project I'm using here)
+My First Project 		
+kosticlab.org
+My First Project 		
+
+Navigate to `Compute Engine`
+This is the main VM I am using (currently): n1-96-624-sd (~$4.50/hr; 'sd' indicates 'standard', i.e. NOT a 'spot' instance).
+Here's in-depth info about the VM
+```{json}
+{
+  "canIpForward": false,
+  "confidentialInstanceConfig": {
+    "enableConfidentialCompute": false
+  },
+  "cpuPlatform": "Intel Skylake",
+  "creationTimestamp": "2024-09-28T09:36:27.454-07:00",
+  "deletionProtection": false,
+  "description": "",
+  "disks": [
+    {
+      "architecture": "X86_64",
+      "guestOsFeatures": [
+        {
+          "type": "UEFI_COMPATIBLE"
+        },
+        {
+          "type": "VIRTIO_SCSI_MULTIQUEUE"
+        },
+        {
+          "type": "GVNIC"
+        },
+        {
+          "type": "SEV_CAPABLE"
+        },
+        {
+          "type": "SEV_LIVE_MIGRATABLE_V2"
+        }
+      ],
+      "type": "PERSISTENT",
+      "licenses": [
+        "projects/debian-cloud/global/licenses/debian-12-bookworm"
+      ],
+      "deviceName": "n1-96-624-sd",
+      "autoDelete": true,
+      "source": "projects/mag-make/zones/us-central1-a/disks/n1-96-624-sd",
+      "index": 0,
+      "boot": true,
+      "kind": "compute#attachedDisk",
+      "mode": "READ_WRITE",
+      "interface": "SCSI",
+      "diskSizeGb": "100"
+    },
+    {
+      "type": "PERSISTENT",
+      "deviceName": "disk-1",
+      "autoDelete": false,
+      "source": "projects/mag-make/zones/us-central1-a/disks/disk-1",
+      "index": 1,
+      "boot": false,
+      "kind": "compute#attachedDisk",
+      "mode": "READ_WRITE",
+      "interface": "SCSI",
+      "diskSizeGb": "1000"
+    }
+  ],
+  "displayDevice": {
+    "enableDisplay": false
+  },
+  "fingerprint": "n8PzQFQ2_LA=",
+  "id": "6863037230166150758",
+  "keyRevocationActionType": "NONE",
+  "kind": "compute#instance",
+  "labelFingerprint": "vQHfasn4SFs=",
+  "labels": {
+    "goog-ops-agent-policy": "v2-x86-template-1-3-0"
+  },
+  "lastStartTimestamp": "2024-09-29T07:04:21.977-07:00",
+  "lastStopTimestamp": "2024-09-28T15:30:15.943-07:00",
+  "machineType": "projects/mag-make/zones/us-central1-a/machineTypes/n1-highmem-96",
+  "metadata": {
+    "fingerprint": "YcPy14CTolA=",
+    "kind": "compute#metadata",
+    "items": [
+      {
+        "value": "adk:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQD9FjnDK0Mqn5PTl0WDZ5a/Mc+PAwK2mX4vXx/7JAxI4Fxel451pkTngi+Jt1aYz8Sqp369qGrsqCrmI8p75PFfVkByIyj3Ex2/X1QeDnjeLULDyFlx3Bgc3L3rGo+sdnoLikd2mXnZ1yDDZG5o3fCClxDmLRBalBv3oifE4I4Sk8uPLH0b7qZ/CgFKEpXmTavDPHIZUCAoTRbLDlPOPPT4fk5rmetb+r8V/aUucwQtYnH+uY/69PLwQ7Zaq60qhaWXP+2a8PfRefeszga101yEFue+tD5pdw5ms2BsjPfyGAWj+c73ea9QLog6jIkM2MmKeFV/pTDWrTDSlR6PkMgVzQrY6kkaWwn+CtDxq7eimO5SRECbympz2kwEpRhdtmWfj9mQX8oRRsH3tsFYS9yg2u257so5owg2S0hRG0ZDELrvlgsUTJS6ObIstzEUVRmYJIMrHopxJlTwuvEdWRj+XSyGn4pKvKlw1C3IPFYwjz953Dc6YEyhtovaOnom4TU= adk@ADK-M3-Max.local",
+        "key": "ssh-keys"
+      },
+      {
+        "value": "TRUE",
+        "key": "enable-osconfig"
+      }
+    ]
+  },
+  "name": "n1-96-624-sd",
+  "networkInterfaces": [
+    {
+      "stackType": "IPV4_ONLY",
+      "name": "nic0",
+      "network": "projects/mag-make/global/networks/default",
+      "accessConfigs": [
+        {
+          "name": "External NAT",
+          "type": "ONE_TO_ONE_NAT",
+          "natIP": "34.46.229.175",
+          "kind": "compute#accessConfig",
+          "networkTier": "PREMIUM"
+        }
+      ],
+      "subnetwork": "projects/mag-make/regions/us-central1/subnetworks/default",
+      "networkIP": "10.128.0.5",
+      "fingerprint": "85L1vxIEX5Y=",
+      "kind": "compute#networkInterface"
+    }
+  ],
+  "reservationAffinity": {
+    "consumeReservationType": "ANY_RESERVATION"
+  },
+  "resourceStatus": {
+    "scheduling": {}
+  },
+  "satisfiesPzi": false,
+  "scheduling": {
+    "onHostMaintenance": "MIGRATE",
+    "provisioningModel": "STANDARD",
+    "automaticRestart": true,
+    "preemptible": false
+  },
+  "selfLink": "projects/mag-make/zones/us-central1-a/instances/n1-96-624-sd",
+  "serviceAccounts": [
+    {
+      "email": "1011815352738-compute@developer.gserviceaccount.com",
+      "scopes": [
+        "https://www.googleapis.com/auth/cloud-platform"
+      ]
+    }
+  ],
+  "shieldedInstanceConfig": {
+    "enableSecureBoot": false,
+    "enableVtpm": true,
+    "enableIntegrityMonitoring": true
+  },
+  "shieldedVmConfig": {
+    "enableSecureBoot": false,
+    "enableVtpm": true,
+    "enableIntegrityMonitoring": true
+  },
+  "startRestricted": false,
+  "status": "RUNNING",
+  "tags": {
+    "items": [
+      "http-server",
+      "https-server",
+      "lb-health-check"
+    ],
+    "fingerprint": "XTN9W2dqKHc="
+  },
+  "zone": "projects/mag-make/zones/us-central1-a"
+}
+```
+
+## Setting up instance
+
+### Mounting device
+Check devices attached to instance
+```{bash}
+$ lsblk
+NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda       8:0    0  100G  0 disk 
+├─sda1    8:1    0 99.9G  0 part /
+├─sda14   8:14   0    3M  0 part 
+└─sda15   8:15   0  124M  0 part /boot/efi
+sdb       8:16   0 1000G  0 disk 
+└─sdb1    8:17   0 1000G  0 part 
+```
+
+List the partitions
+```{bash}
+$ sudo fdisk -l /dev/sdb
+Disk /dev/sdb: 1000 GiB, 1073741824000 bytes, 2097152000 sectors
+Disk model: PersistentDisk  
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+Disklabel type: dos
+Disk identifier: 0x10421290
+
+Device     Boot Start        End    Sectors  Size Id Type
+/dev/sdb1        2048 2097151999 2097149952 1000G 83 Linux
+```
+
+Mount the device & change ownership
+```{bash}
+$ sudo mount /dev/sdb1 /mnt/disk1
+
+$ sudo chown $(id -u):$(id -g) /mnt/disk1
+```
+
+## Transferring files
+This is done using the `gcloud` utility.
+
+Example: transferring files from O2 to GCP instance
+```{bash}
+adk9@transfer04 $ gcloud compute scp --recurse SRR*.fq.gz adk@n1-96-624-sd:/mnt/disk1/anc_mgx/filtered/
+No zone specified. Using zone [us-central1-a] for instance: [n1-96-624-sd].
+bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)
+SRR12557704_filtered_pair1.fq.gz                                                                     100% 7553MB  42.4MB/s   02:58    
+SRR12557704_filtered_pair2.fq.gz                                                                     100% 8551MB  43.3MB/s   03:17    
+SRR12557705_filtered_pair1.fq.gz                                                                     100% 6931MB  45.2MB/s   02:33    
+SRR12557705_filtered_pair2.fq.gz                                                                     100% 7683MB  45.1MB/s   02:50    
+SRR12557706_filtered_pair1.fq.gz                                                                     100% 9048MB  42.2MB/s   03:34    
+SRR12557706_filtered_pair2.fq.gz                                                                     100%   10GB  44.9MB/s   03:49    
+SRR12557707_filtered_pair1.fq.gz                                                                     100% 6179MB  41.4MB/s   02:29    
+SRR12557707_filtered_pair2.fq.gz                                                                     100% 6831MB  44.2MB/s   02:34    
+SRR12557711_filtered_pair1.fq.gz                                                                     100% 7557MB  40.9MB/s   03:04    
+SRR12557711_filtered_pair2.fq.gz                                                                     100% 8331MB  45.0MB/s   03:05    
+SRR12557722_filtered_pair1.fq.gz                                                                     100% 6272MB  43.0MB/s   02:25    
+SRR12557722_filtered_pair2.fq.gz                                                                      22% 1573MB  44.4MB/s   02:03 ETA
+```
