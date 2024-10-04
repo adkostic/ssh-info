@@ -228,3 +228,9 @@ SRR12557711_filtered_pair2.fq.gz                                                
 SRR12557722_filtered_pair1.fq.gz                                                                     100% 6272MB  43.0MB/s   02:25    
 SRR12557722_filtered_pair2.fq.gz                                                                      22% 1573MB  44.4MB/s   02:03 ETA
 ```
+
+Transfering files from a running GCP VM to O2. On O2, run:
+```{bash}
+/n/data1/joslin/icrb/kostic/PROJECTS/YanomamiMicrobiome/MGX_Venezuelan_Yanomami/MAGs/adk9/BASALT_output  
+adk9@compute-a-16-160 $ gcloud compute scp adk@basalt01-20241002:/mnt/disk1/yan_mgx/BASALT/BASALT_TGP131.tar.gz ./
+```
