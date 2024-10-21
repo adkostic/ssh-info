@@ -13,7 +13,7 @@ The new O2Portal runs Open OnDemand (OOD). Provides info on Quota Utilization, s
 ```bash
 #Login to O2
 ssh adk9@o2.hms.harvard.edu
-#pw: &r?@fKTH8L7@
+#pw: J7yN?bSzQo!
 
 #Log in to transfer files
 ssh adk9@transfer.rc.hms.harvard.edu

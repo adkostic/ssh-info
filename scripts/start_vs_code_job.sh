@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH -p priority
-#SBATCH -c 10
-#SBATCH --mem=32G
+#SBATCH -c 4
+#SBATCH --mem=12G
 #SBATCH -t 6:00:00 #### -t 1-6:00:00  # Specifies 1 day and 12 hours
 #SBATCH --job-name="vscodetunnel"
 
